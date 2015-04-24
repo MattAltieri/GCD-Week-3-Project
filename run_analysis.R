@@ -1,6 +1,6 @@
-require(data.table)
 require(dplyr)
 require(tidyr)
+require(Hmisc)
 
 # PROJECT REQUIREMENT #1
 # "[Create a script that] ... merges the training and the test sets to create one data set"
@@ -55,6 +55,7 @@ selections <- as.character(subset(features, grepl("mean\\(\\)", tolower(V2)) |
 HAR_Data_req2 <- select(HAR_Data_req1, one_of(c("subject", "activityId", selections)))
 
 
+
 # PROJECT REQUIREMENT #3
 # "[Create a script that] ... Uses descriptive activity names to name the activities in the data set."
 
@@ -71,46 +72,55 @@ HAR_Data_req3 <- HAR_Data_req2 %>%
     inner_join(activities, by="activityId") %>%
     select(-activityId)
 
+
+
 # PROJECT REQUIREMENT #4
 # "[Create a script that] ... Appropriately labels the data set with descriptive variable names."
 
 HAR_unpivot <- HAR_Data_req3 %>%
     # Step 1: There are many values in the variable names, so we'll gather them into messyVar.
     mutate(observationNbr=row_number()) %>%
-    gather(messyVar, value, -observationNbr, -subject, -activity) %>% 
-    # Step 2: We can separate messyVar w/ the default behavior to capture calculation perfectly, and also
-    #         the X, Y, and Z directions. "magnitude" is missing from direction, so use mutate to fill in the
-    #         blanks.
-    separate(messyVar, c("messyVar", "calculation", "direction")) %>% 
+    gather(originalFeatureName, measurement, -observationNbr, -subject, -activity) %>% 
+    # Step 2: We can separate originalFeatureName w/ the default behavior to capture the type of calculation
+    #         used exactly (with some capitalization added). The direction of motion is mostly captured as
+    #         well (X, Y, Z), but Magnitude requires a mutation to get it in the variable.
+    #         The first, very messy, part of the variable names goes into "messyVar" for further processing.
+    separate(originalFeatureName, c("messyVar", "calculation", "direction"), remove=F) %>% 
+    mutate(calculation=capitalize(calculation)) %>%
     mutate(direction=ifelse(direction == "", "Magnitude", direction)) %>%
     # Step 3: The first character of messyVar signifies the domain, so we'll separate it out and then mutate
     #         it into a tidy form.
     separate(messyVar, c("domain", "messyVar"), sep=c(1)) %>%
-    mutate(domain=ifelse(domain == "t", "time", "ttf")) %>%
-    # Step 4: Everything else is a total mess in messyVar. grepl and ifelse via mutate is our best friend
-    #         here. We'll capture the signalsource values of "gravity", "body jerk", and "body" first.
-    mutate(signalsource="") %>%
-    mutate(signalsource=ifelse(grepl("Gravity", messyVar), "Gravity", signalsource)) %>%
-    mutate(signalsource=ifelse(grepl("Jerk", messyVar), "Body Jerk", signalsource)) %>%
-    mutate(signalsource=ifelse(signalsource == "", "Body", signalsource)) %>%
+    mutate(domain=ifelse(domain == "t", "Time Domain Signal", "Frequency Domain Signal (TTF)")) %>%
+    # Step 4: Everything else is a total mess in messyVar. grepl and ifelse via mutate are our best friends
+    #         here. We'll capture the signalSource values of "gravity", "body jerk", and "body" first.
+    mutate(signalSource="") %>%
+    mutate(signalSource=ifelse(grepl("Gravity", messyVar), "Gravity", signalSource)) %>%
+    mutate(signalSource=ifelse(grepl("Jerk", messyVar), "Body Jerk", signalSource)) %>%
+    mutate(signalSource=ifelse(signalSource == "", "Body", signalSource)) %>%
     # Step 5: The device is a little easier.
     mutate(device=ifelse(grepl("Gyro", messyVar), "Gyro", "Accel")) %>%
-    # Step 6: Let's put them in a nice order and drop messyVar for good
-    #select(subject, activity, domain, device, signalsource, direction, calculation, value) %>%
-    # Step 6: Now we can pivot out the actual calculations via spread.
-    spread(calculation, value) %>%
-    # Step 7: Put the fields in a tidy order
-    select(subject, activity, domain, device, signalsource, direction, mean, std) %>%
-    # Step 8: Finally, convert character variables into factors where appropriate
-    mutate(domain=factor(domain),
+    # Step 6: Put the fields in a tidy order
+    select(subject, activity, originalFeatureName, domain, device, signalSource, direction, calculation, measurement) %>%
+    # Step 7: Finally, convert character variables into factors where appropriate
+    mutate(originalFeatureName=factor(originalFeatureName),
+           domain=factor(domain),
            device=factor(device),
-           signalsource=factor(signalsource),
-           direction=factor(direction))
+           signalSource=factor(signalSource),
+           direction=factor(direction),
+           calculation=factor(calculation))
+
+
 
 # PROJECT REQUIREMENT #5
 # "[Create a script that] ... From the data set in step 4, creates a second, independent tidy data set with
 # the average of each variable for each activity and each subject."
 
 HAR_tidy <- HAR_unpivot %>%
-    group_by(subject, activity, domain, device, signalsource, direction) %>%
-    summarize(meanOfObservedMeans=mean(mean), meanOfObservedStd=mean(std))
+    group_by(subject, activity, originalFeatureName, domain, device, signalSource, direction,
+             calculation) %>%
+    dplyr::summarize(meanOfMeasurement=mean(measurement)) # Hmisc also has a "summarize", namespace needed.
+
+
+# Export dataset to txt file
+write.table(HAR_tidy, "./HAR_tidy.txt", row.names=F)
