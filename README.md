@@ -14,7 +14,7 @@ In the source data, variable names do not follow a consistent format or use clea
 			- e.g. "tBodyAccMag-mean()", "tGravityAccMag-max()", etc.
 		- In our dataset: **no symbol**  
 			- e.g. "accel.body.mean.magnitude", "accel.grav.max.magnitude", etc.
-			- The domain is assumed to be time unless otherwise specified, as these are the measurements from the actual devices. Additionally, `time` is an ambiguous term that could lead the analyst to believe we were describing units rather than domain
+			- The domain is assumed to be time unless otherwise specified.
 	- Frequency (via FFT transform of some Time Domain measurements)
 		- In features.txt from the source data: `f`
 			- e.g. "fBodyAccMag-mean()", "fBodyAccJerk-std()-Z", etc.
