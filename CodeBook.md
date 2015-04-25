@@ -177,9 +177,9 @@
 - **calculation** - The calculation estimated for each measurement
 	- Character (Factor)
 		- Mean
-			- Estimated mean value for the signal, for the given device, signalSource, and direction of motion, within the given domain. Maps to the presence of the string "-mean()" in **originalFeatureName**
+			- Estimated mean value for the signal, for the given **device**, **signalSource**, and **direction** of motion, within the given **domain**. Maps to the presence of the string "-mean()" in **originalFeatureName**
 		- Std
-			- Estimated standard dev. for the signal, for the given device, signalSource, and direction of motion, within the given domain. Maps to the presence of the string "-std()" in **originalFeatureName**
+			- Estimated standard dev. for the signal, for the given **device**, **signalSource**, and **direction** of motion, within the given **domain**. Maps to the presence of the string "-std()" in **originalFeatureName**
 - **meanOfMeasurement** - Aggregate mean of all measurements for each subject, activity, and feature.
 	- Numeric
-		- Angular momentum, extressed as ny value between -1.0 and 1.0, inclusive.
+		- Angular momentum, expressed as ny value between -1.0 and 1.0, inclusive.
