@@ -46,8 +46,7 @@ HAR_Data_req1 <- bind_rows(testData, trainData)
 # "[Create a script that]... Extracts only the measurements on the mean and
 # standard deviation for each measurement. "
 
-# Capture the mean and std feature names from features so that we can select
-# them from HAR_Data
+# Capture the mean and std feature names from features so that we can select them from HAR_Data_req1
 selections <- as.character(subset(features, grepl("mean\\(\\)", tolower(V2)) | 
                                       grepl("std\\(\\)", tolower(V2)))$V2)
 
@@ -78,9 +77,9 @@ HAR_Data_req3 <- HAR_Data_req2 %>%
 # "[Create a script that] ... Appropriately labels the data set with descriptive variable names."
 
 HAR_unpivot <- HAR_Data_req3 %>%
-    # Step 1: There are many values in the variable names, so we'll gather them into messyVar.
-    mutate(observationNbr=row_number()) %>%
-    gather(originalFeatureName, measurement, -observationNbr, -subject, -activity) %>% 
+    # Step 1: There are many values in the variable names, so we'll gather them into "originalFeatureName"
+    #         and their values "measurement".
+    gather(originalFeatureName, measurement, -subject, -activity) %>% 
     # Step 2: We can separate originalFeatureName w/ the default behavior to capture the type of calculation
     #         used exactly (with some capitalization added). The direction of motion is mostly captured as
     #         well (X, Y, Z), but Magnitude requires a mutation to get it in the variable.

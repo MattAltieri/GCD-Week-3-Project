@@ -1,108 +1,98 @@
-# GCD-Week-3-Project
+## Summary
 
-## Variable ("feature") names
-In the source data, variable names do not follow a consistent format or use clear abbreviations. In our dataset, we will be following the pattern below for all numeric measures. ("[somethingsomething] indicates optional.)
+This project used data files from the _Human Activity Recognition Using Smartphones Data Set_ available at the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones).
 
+The raw data is available [here](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip ).
+
+The goal of this project is to read in both the test and training datasets, tidy them up for analysis, and output a dataset containing the average values of all _mean()_ and _std()_ measurements for each subject and activity (_meanFreq()_ and _angle(...Mean)_ are both ignored here). Either the long form or the wide form can be presented, as long as the data is tidy.
+
+In this solution, I've opted for the long form, though I've taken time to add variables which break down the original measurement names in their component parts (see CodeBook.md for more info on this). The variable names in the raw data contain a lot of information about the nature of the devices and movements being measured, and it's not clear from the request exactly what the requester is planning to measure. This allows for a great degree of freedom to perform a number of analyses.
+
+## Code Walkthrough
+
+##### Packages used
+- `dplyr`
+- `tidyr`
+- `Hmisc`
+
+##### Project Requirement #1
+> [Create a script that] ... merges the training and the test sets to create one data set.
+
+1. _features.txt_ is read into `features` so that it can provide us with the basic headers of the _X_[test|train].txt_ files.
+2. Load the **test** data:
+	1. _subject_test.txt_ is read into `testSubjects` to be combined w/ the numeric observations in _X_test.txt_.
+	2. _y_test.txt_ is read into `testActivityIDs` to be combined w/ the numeric observations in _X_test.txt_.
+	3. Finally, _X_test.txt_ is read into `testData`.
+	4. The rightmost column of `features` is applied to the `names` attribute of `testData` to provide the **test** observations with basic (untidy) variable names. 
+	5. `cbind` is used to combine `testSubjects`, `testActivityIDs`, and `testData`. This is done before anything else to ensure they stay in the same order.
+3. Load the **train** data:
+	1. _subject_train.txt_ is read into `trainSubjects` to be combined w/ the numeric observations in _X_train.txt_.
+	2. _y_train.txt_ is read into `trainActivityIDs` to be combined w/ the numeric observations in _X_train.txt_.
+	3. Finally, _X_train.txt_ is read into `trainData`.
+	4. The rightmost column of `features` is applied to the `names` attribute of `trainData` to provide the **training** observations with basic (untidy) variable names.
+	5. `cbind()` is used to combine `trainSubjects`, `trainActivityIDs`, and `trainData`. This is done before anything else to ensure they stay in the same order.
+4.  As a final step, `dplyr:bind_rows()` is used to quickly union together the **test** and **training** datasets.
+  
+The resulting dataset is `HAR_Data_req1`.
+
+##### Project Requirement #2
+> [Create a script that]... Extracts only the measurements on the mean and standard deviation for each measurement.
+
+1. The variables `subject`, `activityId`, and any features with either "sum()" or "std()" in their name are selected, and all other features are excluded.   
+
+The resulting dataset is `HAR_Data_req2`.
+
+##### Project Requirement #3
+> [Create a script that] ... Uses descriptive activity names to name the activities in the data set.
+
+**Note:** _activity_labels.txt_ has the definitions for the activity IDs from _y_test.txt_ and _y_train.txt_, but not in an easily machine-readable format. Instead I've interpreted their contents into a hard-coded data frame in the script itself.
+
+1. An `activities` data frame is created to mimic the contents of _activity_labels.txt_ in tabular form. The text descriptions are loaded in 1:6 order from a character vector, then `dplyr::mutate()` and `dplyr::row_number()` are used to assign the IDs, since they're already in the correct order.
+2. `dplyr::inner_join()` is used to merge `activities` to `HAR_Data_req2` on the _activityId_ field.
+3. Finally, the variable _activityId_ is excluded from the results. We won't need it now that we have the activity names.
+
+The resulting dataset is `HAR_Data_req3`.
+
+##### Project Requirement #4
+> [Create a script that] ... Appropriately labels the data set with descriptive variable names.
+
+**Note:** This step probably could have been much shorter, but the variable names are so unclear (and the contents of _features_info.txt_ so out of sync with the actual feature names) that I decided it would make for much cleaner data to pull out the meaning of the variable names and capture them as discrete variables that could be filtered, grouped or pivoted on as needed.
+
+The full definitions of these extracted variables can be found in CodeBook.md.
+- domain
+- device
+- signalSource
+- direction
+- calculation
+
+The original variable names are maintained in a variable called _originalFeatureName_ so that the relationship between the original feature names and the tidied-up variables is apparent.
+
+1. HAR_Data_req3 is unpivoted (with `dplyr::gather()`) so that all feature names are now in the variable _originalFeatureName_, and the values are in the variable _measurement_.
+2. The _calculation_ and _direction_ variables are pulled out of _originalFeatureName_ with the default behavior of `tidyr::separate()` and some minor adjustments via `dplyr::mutate()`.
+3. The measurement domain (time or frequency) are pulled out of the first character of _messyVar_, again with a combination of `tidyr::separate()` and `dplyr::mutate()`.
+4. The _signalSource_ is pulled out of _messyVar_ next using a chain of `dplyr:mutate()` function calls. `ifelse()` and `grepl()` do the heavy lifting here.
+5. The same basic approach is able to capture the _device_ variable.
+6. `dplyr::select()` is used to grab only the variables we want, and put them in a sensible order.
+7. `dplyr::mutate()` is then used to cast the character variables into factors.
+
+The resulting dataset is `HAR_unpivot`.
+
+##### Project Requirement #5
+> [Create a script that] ... From the data set in step 4, creates a second,  independent tidy data set with the average of each variable for each activity and each subject.
+
+1. `HAR_unpivot` is grouped by all variables except _measurement_.
+2. Then the mean of _measurement_ is calculated across the grouped variables.
+
+The resulting dataset is `HAR_tidy`.
+
+##### Project Output
+
+The following function call is used to write `HAR_tidy` to a text file:
+``` r
+write.table(HAR_tidy, "./HAR_tidy.txt", row.names=F)
 ```
-[domain.]device.source.calculation.direction
+
+It can be read back in with:
+``` r
+HAR_tidy <- read.table("./HAR_tidy.txt", header=T)
 ```
- 
-**Definitions for each portion are provided below:**
-- Domain
-	- Time
-		- In features.txt from the source data: `t`
-			- e.g. "tBodyAccMag-mean()", "tGravityAccMag-max()", etc.
-		- In our dataset: **no symbol**  
-			- e.g. "accel.body.mean.magnitude", "accel.grav.max.magnitude", etc.
-			- The domain is assumed to be time unless otherwise specified.
-	- Frequency (via FFT transform of some Time Domain measurements)
-		- In features.txt from the source data: `f`
-			- e.g. "fBodyAccMag-mean()", "fBodyAccJerk-std()-Z", etc.
-			- features_info.txt does not specify which FFT algorithm was used
-		- In our dataset:`fft`
-			- e.g. "fft.accel.body.mean.magnitude", "fft.accelJerk.body.std.Z", etc.
-			- The frequency domain is _derived_ via Fast Fourier transforms of values from the time domain, so we _derive_ the frequency domain names by modifying the time domain measurements with the `fft` prefix.
-				- `freq` was considered as a possible prefix, but as some measurements in the source use `freq` to mean something slightly different, and I wanted the meaning to be unambiguous.
-- Device
-	- Accelerometer
-		- In features.txt from the source data: `Acc`
-			- e.g. "tGravityAccMag-mean(), "tGravityAccMag-arCoeff()1", etc.
-		- In our dataset: `accel`
-			- e.g. "accel.grav.mean.magnitude", "accel.grav.autoReg1.magnitude", etc.
-			- `accel` was chosen over `acc` in an effort to reduce ambiguity
-	- Gyroscope
-		- In features.txt from the source data: `Gyro`
-			- e.g. "tBodyGyroMag-mean()", "tBodyGyroMag-std()", etc.
-		- In our dataset: `gyro`
-			- e.g. "gyro.body.mean.magnitude", "gyro.body.std.magnitude", etc.
-- Signal Source
-	- Body
-		- In features.txt from the source data: `Body` or `BodyBody` 
-			- e.g. "tBodyAccMag-mean()", "fBodyBodyGyroMag-max()", etc.
-			- `BodyBody` appears to be a typo in source data, but it is consistently applied. There is no modifier of `BodyBody` indicated in features_info.txt, so it is assumed to mean the same thing as `Body`
-		- In our dataset: `body`
-			- e.g. "accel.body.mean.magnitude", "fft.gyro.body.max.magnitude", etc.
-	- Body Jerk
-		- In features.txt from the source data: `Body...Jerk` or `BodyBody...Jerk`
-			- e.g. "tBodyAccJerkMag-mean()", "fBodyBodyGyroJerkMag-max()", etc 
-			- `BodyBody` appears to be a typo in source data, but it is consistently applied. There is no modifier of `BodyBody` indicated in features_info.txt, so it is assumed to mean the same thing as `Body`
-		- In our dataset: `bodyJerk`
-			- e.g. "accel.bodyJerk.mean.magnitude", "fft.gyro.bodyJerk.max.magnitude", etc.
-			- `bodyJerk` is used instead of `body.jerk` to help indicate that this is derived from the `body` signals, and to keep variable names w/i the form `[domain.]device.source.calculation.direction`
-	- Gravity
-		- In features.txt from the source data: `Gravity`
-			- e.g. "tGravityAccMag-mean(), "tGravityAccMag-arCoeff()1", etc.
-		- In our dataset: `grav`
-			- e.g. "accel.grav.mean.magnitude", "accel.grav.autoReg1.magnitude", etc.
-- Calculation
-	- Note: the source data captures a variety of calculations, but for this dataset we are only concerned with two; the mean and the standard deviation.
-	- Let it be understood that "meanFreq" from the source data is not precisely the same thing as "mean" in terms of signal measurement. Since the request specified only "mean" and "standard deviation", "meanFreq" is being excluded.
-	- The "angle" calculations are also excluded, even when operating on the mean, for the same reason.
-	- Mean
-		- In features.txt from the source data: `-mean()` 
-			- e.g. "tBodyAccMag-mean()", "tGravityAccMag-mean()", etc.
-		- In our dataset: `mean`
-			- e.g. "accel.body.mean.magnitude", "accel.grav.mean.magnitude", etc.
-	- Standard Deviation
-		- In features.txt from the source data: `-std()`
-			- e.g. "tBodyAccMag-std()", "tGravityAccMag-std()", etc.
-		- In our dataset: `std`
-			- e.g. "accel.body.std.magnitude", "accel.grav.std.magnitude", etc.
-	- The following source calculations are being excluded from our dataset:
-		- mad(): Median absolute deviation 
-		- max(): Largest value in array
-		- min(): Smallest value in array
-		- sma(): Signal magnitude area
-		- energy(): Energy measure. Sum of the squares divided by the number of values. 
-		- iqr(): Interquartile range 
-		- entropy(): Signal entropy
-		- arCoeff(): Autorregresion coefficients with Burg order equal to 4
-		- correlation(): correlation coefficient between two signals
-		- maxInds(): index of the frequency component with largest magnitude
-		- meanFreq(): Weighted average of the frequency components to obtain a mean frequency
-		- skewness(): skewness of the frequency domain signal 
-		- kurtosis(): kurtosis of the frequency domain signal 
-		- bandsEnergy(): Energy of a frequency interval within the 64 bins of the FFT of each window.
-		- angle(): Angle between to vectors.
-- Direction of motion
-	- X
-		- In features.txt from the source data: `-X`
-			- e.g. "tBodyAcc-mean()-X", "tBodyAcc-std()-X", etc.
-		- In our dataset: `x`
-			- e.g. "accel.body.mean.x", "accel.body.std.x", etc.
-	- Y
-		- In features.txt from the source data: `-Y`
-			- e.g. "tBodyAcc-mean()-Y", "tBodyAcc-std()-Y", etc.
-		- In our dataset: `x`
-			- e.g. "accel.body.mean.y", "accel.body.std.y", etc. 
-	- Z
-		- In features.txt from the source data: `-Z`
-			- e.g. "tBodyAcc-mean()-Z", "tBodyAcc-std()-Z", etc.
-		- In our dataset: `x`
-			- e.g. "accel.body.mean.z", "accel.body.std.z", etc.
-	- Magnitude
-		- In features.txt from the source data: `Mag`
-			- e.g. "tBodyAccMag-mean()", "tBodyAccMag-std()", etc
-		- In our dataset: `magnitude`
-			- e.g. "accel.body.mean.magnitude", "accel.body.std.magnitude", etc.
-		- `mag` was considered as an option, but ultimately rejected in order to reduce ambiguity
