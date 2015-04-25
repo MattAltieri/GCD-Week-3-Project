@@ -8,7 +8,7 @@ The goal of this project is to read in both the test and training datasets, tidy
 
 In this solution, I've opted for the long form, though I've taken time to add variables which break down the original measurement names in their component parts (see CodeBook.md for more info on this). The variable names in the raw data contain a lot of information about the nature of the devices and movements being measured, and it's not clear from the request exactly what the requester is planning to measure. This allows for a great degree of freedom to perform a number of analyses.
 
-## Code Walkthrough
+## Code Walkthrough - run_analysis.R
 
 ##### Packages used
 - `dplyr`
