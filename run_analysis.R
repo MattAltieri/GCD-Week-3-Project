@@ -90,7 +90,7 @@ HAR_unpivot <- HAR_Data_req3 %>%
     # Step 3: The first character of messyVar signifies the domain, so we'll separate it out and then mutate
     #         it into a tidy form.
     separate(messyVar, c("domain", "messyVar"), sep=c(1)) %>%
-    mutate(domain=ifelse(domain == "t", "Time Domain Signal", "Frequency Domain Signal (TTF)")) %>%
+    mutate(domain=ifelse(domain == "t", "Time Domain Signal", "Frequency Domain Signal (FFT)")) %>%
     # Step 4: Everything else is a total mess in messyVar. grepl and ifelse via mutate are our best friends
     #         here. We'll capture the signalSource values of "gravity", "body jerk", and "body" first.
     mutate(signalSource="") %>%

@@ -1,0 +1,185 @@
+## HAR_tidy.txt Data Dictionary
+- **subject** - The experiment subject's anonymous ID assigned by the researchers at random.
+	- Integer
+		- 1, 2, 3... 28, 29, 30
+- **activity** - The activity the subject was engaged in when the signal data was captured.
+	- Character (Factor)
+		- 1 Walking
+		- 2 Walking Upstairs
+		- 3 Walking Downstairs
+		- 4 Sitting
+		- 5 Standing
+		- 6 Laying Down 
+- **originalFeatureName** - The original feature measurement name from the raw HAR data. Contains the same information as the **domain**, **device**, **signalSource**, **direction**, **calculation** attributes further down in this document, but in an inconsistent form.
+	- Character (Factor)
+		- tBodyAcc-mean()-X
+			- Time domain measurement of the mean motion along the X axis caused by body movement, as captured by the accelerometer.
+		- tBodyAcc-mean()-Y
+			- Time domain measurement of the mean motion along the Y axis caused by body movement, as captured by the accelerometer.
+		- tBodyAcc-mean()-Z
+			- Time domain measurement of the mean motion along the Z axis caused by body movement, as captured by the accelerometer.
+		- tBodyAcc-std()-X
+			- Time domain measurement of the standard dev. of motion along the X axis caused by body movement, as captured by the accelerometer.
+		- tBodyAcc-std()-Y
+			- Time domain measurement of the standard dev. of motion along the Y axis caused by body movement, as captured by the accelerometer.
+		- tBodyAcc-std()-Z
+			- Time domain measurement of the standard dev. of motion along the Z axis caused by body movement, as captured by the accelerometer.
+		- tGravityAcc-mean()-X
+			- Time domain measurement of the mean motion along the X axis caused by gravity, as captured by the accelerometer.
+		- tGravityAcc-mean()-Y
+			- Time domain measurement of the mean motion along the Y axis caused by gravity, as captured by the accelerometer.
+		- tGravityAcc-mean()-Z
+			- Time domain measurement of the mean motion along the Z axis caused by gravity, as captured by the accelerometer.
+		- tGravityAcc-std()-X
+			- Time domain measurement of the standard dev. of motion along the X axis caused by gravity, as captured by the accelerometer.
+		- tGravityAcc-std()-Y
+			- Time domain measurement of the standard dev. of motion along the Y axis caused by gravity, as captured by the accelerometer.
+		- tGravityAcc-std()-Z
+			- Time domain measurement of the standard dev. of motion along the Z axis caused by gravity, as captured by the accelerometer.
+		- tBodyAccJerk-mean()-X
+			- Time domain measurement of the mean motion along the X axis caused by jerks of the body, as captured by the accelerometer.
+		- tBodyAccJerk-mean()-Y
+			- Time domain measurement of the mean motion along the Y axis caused by jerks of the body, as captured by the accelerometer.
+		- tBodyAccJerk-mean()-Z
+			- Time domain measurement of the mean motion along the Z axis caused by jerks of the body, as captured by the accelerometer.
+		- tBodyAccJerk-std()-X
+			- Time domain measurement of the standard dev. of motion along the X axis caused by jerks of the body, as captured by the accelerometer.
+		- tBodyAccJerk-std()-Y
+			- Time domain measurement of the standard dev. of motion along the Y axis caused by jerks of the body, as captured by the accelerometer.
+		- tBodyAccJerk-std()-Z
+			- Time domain measurement of the standard dev. of motion along the Z axis caused by jerks of the body, as captured by the accelerometer.
+		- tBodyGyro-mean()-X
+			- Time domain measurement of the mean motion along the X axis caused by body movement, as captured by the gyroscope.
+		- tBodyGyro-mean()-Y
+			- Time domain measurement of the mean motion along the Y axis caused by body movement, as captured by the gyroscope.
+		- tBodyGyro-mean()-Z
+			- Time domain measurement of the mean motion along the Z axis caused by body movement, as captured by the gyroscope.
+		- tBodyGyro-std()-X
+			- Time domain measurement of the standard dev. of motion along the X axis caused by body movement, as captured by the gyroscope.
+		- tBodyGyro-std()-Y
+			- Time domain measurement of the standard dev. of motion along the Y axis caused by body movement, as captured by the gyroscope.
+		- tBodyGyro-std()-Z
+			- Time domain measurement of the standard dev. of motion along the Z axis caused by body movement, as captured by the gyroscope.
+		- tBodyGyroJerk-mean()-X
+			- Time domain measurement of the mean motion along the X axis caused by jerks of the body, as captured by the gyroscope.
+		- tBodyGyroJerk-mean()-Y
+			- Time domain measurement of the mean motion along the Y axis caused by jerks of the body, as captured by the gyroscope.
+		- tBodyGyroJerk-mean()-Z
+			- Time domain measurement of the mean motion along the Z axis caused by jerks of the body, as captured by the gyroscope.
+		- tBodyGyroJerk-std()-X
+			- Time domain measurement of the standard dev. of motion along the X axis caused by jerks of the body, as captured by the gyroscope.
+		- tBodyGyroJerk-std()-Y
+			- Time domain measurement of the standard dev. of motion along the Y axis caused by jerks of the body, as captured by the gyroscope.
+		- tBodyGyroJerk-std()-Z
+			- Time domain measurement of the standard dev. of motion along the Z axis caused by jerks of the body, as captured by the gyroscope.
+		- tBodyAccMag-mean()
+			- Time domain measurement of the mean of the magnitude of motion in 3 dimensions (X, Y, Z) caused by body movement, as captured by the accelerometer.
+		- tBodyAccMag-std()
+			- Time domain measurement of the standard dev. of the magnitude of motion in 3 dimensions (X, Y, Z) caused by body movement, as captured by the accelerometer.
+		- tGravityAccMag-mean()
+			- Time domain measurement of the mean of the magnitude of motion in 3 dimensions (X, Y, Z) caused by gravity, as captured by the accelerometer.
+		- tGravityAccMag-std()
+			- Time domain measurement of the standard dev. of the magnitude of motion in 3 dimensions (X, Y, Z) caused by gravity, as captured by the accelerometer.
+		- tBodyAccJerkMag-mean()
+			- Time domain measurement of the mean of the magnitude of motion in 3 dimensions (X, Y, Z) caused by jerks of the body, as captured by the accelerometer.
+		- tBodyAccJerkMag-std()
+			- Time domain measurement of the standard dev. of the magnitude of motion in 3 dimensions (X, Y, Z) caused by jerks of the body, as captured by the accelerometer.
+		- tBodyGyroMag-mean()
+			- Time domain measurement of the mean of the magnitude of motion in 3 dimensions (X, Y, Z) caused by body movement, as captured by the gyroscope.
+		- tBodyGyroMag-std()
+			- Time domain measurement of the standard dev. of the magnitude of motion in 3 dimensions (X, Y, Z) caused by body movement, as captured by the gyroscope.
+		- tBodyGyroJerkMag-mean()
+			- Time domain measurement of the mean of the magnitude of motion in 3 dimensions (X, Y, Z) caused by jerks of the body, as captured by the gyroscope.
+		- tBodyGyroJerkMag-std()
+			- Time domain measurement of the standard dev of the magnitude of motion in 3 dimensions (X, Y, Z) caused by jerks of the body, as captured by the gyroscope.
+		- fBodyAcc-mean()-X
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAcc-mean()-X
+		- fBodyAcc-mean()-Y
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAcc-mean()-Y
+		- fBodyAcc-mean()-Z
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAcc-mean()-Z
+		- fBodyAcc-std()-X
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAcc-std()-X
+		- fBodyAcc-std()-Y
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAcc-std()-Y
+		- fBodyAcc-std()-Z
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAcc-std()-Z
+		- fBodyAccJerk-mean()-X
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAccJerk-mean()-X
+		- fBodyAccJerk-mean()-Y
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAccJerk-mean()-Y
+		- fBodyAccJerk-mean()-Z
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAccJerk-mean()-Z
+		- fBodyAccJerk-std()-X
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAccJerk-std()-X
+		- fBodyAccJerk-std()-Y
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAccJerk-std()-Y
+		- fBodyAccJerk-std()-Z
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAccJerk-std()-Z
+		- fBodyGyro-mean()-X
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyGyro-mean()-X
+		- fBodyGyro-mean()-Y
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyGyro-mean()-Y
+		- fBodyGyro-mean()-Z
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyGyro-mean()-Z
+		- fBodyGyro-std()-X
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyGyro-std()-X
+		- fBodyGyro-std()-Y
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyGyro-std()-Y
+		- fBodyGyro-std()-Z
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyGyro-std()-Z
+		- fBodyAccMag-mean()
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAccMag-mean()
+		- fBodyAccMag-std()
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAccMag-std()
+		- fBodyBodyAccJerkMag-mean()
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAccJerkMag-mean()
+		- fBodyBodyAccJerkMag-std()
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyAccJerkMag-std()
+		- fBodyBodyGyroMag-mean()
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyGyroMag-mean()
+		- fBodyBodyGyroMag-std()
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyGyroMag-std()
+		- fBodyBodyGyroJerkMag-mean()
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyGyroJerkMag-mean()
+		- fBodyBodyGyroJerkMag-std()
+			- Frequency domain measurement derived via Fast Fourier transformation of tBodyGyroJerkMag-std()
+- **domain** - The domain of the signal measurement.
+	- Character (Factor)
+		- Time Domain Signal
+			- Signals captured over time, maps to "t" in the first character of **originalFeatureName**
+		- Frequency Domain Signal (FFT)
+			- Fast Fourier transformation of Time Domain Signals, maps to "f" in the first character of **originalFeatureName**
+- **device** - The device which captured the measurement.
+	- Character (Factor)
+		- Accel
+			- Accelerometer, maps to the presence of the string "Acc" in **originalFeatureName**
+		- Gyro
+			- Gyroscope, maps to the presence of the string "Gyro" in **originalFeatureName** 
+- **signalSource** - The source of the signal, derived using a variety of filters.
+	- Character (Factor)
+		- Body
+			- Deliberate body motion, maps to the presence of the string "Body" but not "Jerk" in **originalFeatureName**
+		- Body Jerk
+			- Involuntary bodily jerks, maps to the presence of the string "Jerk" in **originalFeatureName**
+		- Gravity
+			- Filtered out motion caused by gravity. maps to the presence of the string "Gravity" in **originalFeatureName**  
+- **direction** - The direction of motion.
+	- Character (Factor)
+		- Magnitude
+			- The magnitude of motion in 3 dimensions (X, Y, Z), maps to the presence of the string "Mag" in **originalFeatureName**
+		- X
+			- Motion along the X-axis, maps to the presence of the string "-X" in **originalFeatureName**
+		- Y
+			- Motion along the Y-axis, maps to the presence of the string "-Y" in **originalFeatureName**
+		- Z
+			- Motion along the Z-axis, maps to the presence of the string "-Z" in **originalFeatureName**
+- **calculation** - The calculation estimated for each measurement
+	- Character (Factor)
+		- Mean
+			- Estimated mean value for the signal, for the given device, signalSource, and direction of motion, within the given domain. Maps to the presence of the string "-mean()" in **originalFeatureName**
+		- Std
+			- Estimated standard dev. for the signal, for the given device, signalSource, and direction of motion, within the given domain. Maps to the presence of the string "-std()" in **originalFeatureName**
+- **meanOfMeasurement** - Aggregate mean of all measurements for each subject, activity, and feature.
+	- Numeric
+		- Angular momentum, extressed as ny value between -1.0 and 1.0, inclusive.
