@@ -18,20 +18,20 @@ In this solution, I've opted for the long form, though I've taken time to add va
 ##### Project Requirement #1
 > [Create a script that] ... merges the training and the test sets to create one data set.
 
-1. _features.txt_ is read into `features` so that it can provide us with the basic headers of the _X_[test|train].txt_ files.
+1. _features.txt_ is read into `features` so that it can provide us with the basic headers of the observation files.
 2. Load the **test** data:
 	1. _subject_test.txt_ is read into `testSubjects` to be combined w/ the numeric observations in _X_test.txt_.
 	2. _y_test.txt_ is read into `testActivityIDs` to be combined w/ the numeric observations in _X_test.txt_.
-	3. Finally, _X_test.txt_ is read into `testData`.
+	3. _X_test.txt_ is read into `testData`.
 	4. The rightmost column of `features` is applied to the `names` attribute of `testData` to provide the **test** observations with basic (untidy) variable names. 
-	5. `cbind` is used to combine `testSubjects`, `testActivityIDs`, and `testData`. This is done before anything else to ensure they stay in the same order.
-3. Load the **train** data:
+	5. `cbind()` is used to combine `testSubjects`, `testActivityIDs`, and `testData`. This is done before anything else to ensure they stay in the same order.
+3. Load the **training** data:
 	1. _subject_train.txt_ is read into `trainSubjects` to be combined w/ the numeric observations in _X_train.txt_.
 	2. _y_train.txt_ is read into `trainActivityIDs` to be combined w/ the numeric observations in _X_train.txt_.
-	3. Finally, _X_train.txt_ is read into `trainData`.
+	3. _X_train.txt_ is read into `trainData`.
 	4. The rightmost column of `features` is applied to the `names` attribute of `trainData` to provide the **training** observations with basic (untidy) variable names.
 	5. `cbind()` is used to combine `trainSubjects`, `trainActivityIDs`, and `trainData`. This is done before anything else to ensure they stay in the same order.
-4.  As a final step, `dplyr:bind_rows()` is used to quickly union together the **test** and **training** datasets.
+4.  As a final step, `dplyr::bind_rows()` is used to quickly union together the **test** and **training** datasets.
   
 The resulting dataset is `HAR_Data_req1`.
 
@@ -47,7 +47,7 @@ The resulting dataset is `HAR_Data_req2`.
 
 **Note:** _activity_labels.txt_ has the definitions for the activity IDs from _y_test.txt_ and _y_train.txt_, but not in an easily machine-readable format. Instead I've interpreted their contents into a hard-coded data frame in the script itself.
 
-1. An `activities` data frame is created to mimic the contents of _activity_labels.txt_ in tabular form. The text descriptions are loaded in 1:6 order from a character vector, then `dplyr::mutate()` and `dplyr::row_number()` are used to assign the IDs, since they're already in the correct order.
+1. An `activities` data frame is created to mimic the contents of _activity_labels.txt_ in tabular form. The text descriptions are loaded in the correct order from a character vector, then `dplyr::mutate()` and `dplyr::row_number()` are used to assign the IDs.
 2. `dplyr::inner_join()` is used to merge `activities` to `HAR_Data_req2` on the _activityId_ field.
 3. Finally, the variable _activityId_ is excluded from the results. We won't need it now that we have the activity names.
 
@@ -67,12 +67,12 @@ The full definitions of these extracted variables can be found in CodeBook.md.
 
 The original variable names are maintained in a variable called _originalFeatureName_ so that the relationship between the original feature names and the tidied-up variables is apparent.
 
-1. HAR_Data_req3 is unpivoted (with `dplyr::gather()`) so that all feature names are now in the variable _originalFeatureName_, and the values are in the variable _measurement_.
-2. The _calculation_ and _direction_ variables are pulled out of _originalFeatureName_ with the default behavior of `tidyr::separate()` and some minor adjustments via `dplyr::mutate()`.
+1. HAR_Data_req3 is unpivoted with `dplyr::gather()` so that all feature names are now in the variable _originalFeatureName_, and the values are in the variable _measurement_. _subject_ and _activity_ are kept as their own variables.
+2. The _calculation_ and _direction_ variables are pulled out of _originalFeatureName_ with the default behavior of `tidyr::separate()` and some minor adjustments via `dplyr::mutate()`. Everything else just dropped into _messyVar_.
 3. The measurement domain (time or frequency) are pulled out of the first character of _messyVar_, again with a combination of `tidyr::separate()` and `dplyr::mutate()`.
 4. The _signalSource_ is pulled out of _messyVar_ next using a chain of `dplyr:mutate()` function calls. `ifelse()` and `grepl()` do the heavy lifting here.
 5. The same basic approach is able to capture the _device_ variable.
-6. `dplyr::select()` is used to grab only the variables we want, and put them in a sensible order.
+6. `dplyr::select()` is used to grab only the variables we want, and put them in a sensible order. _messyVar_ is excluded; we've gotten what we needed from it.
 7. `dplyr::mutate()` is then used to cast the character variables into factors.
 
 The resulting dataset is `HAR_unpivot`.
